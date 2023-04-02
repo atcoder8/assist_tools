@@ -45,8 +45,10 @@ if __name__ == "__main__":
 
     cmdline_args = parser.parse_args()
 
-    assert hasattr(cmdline_args, "run_command")
-    assert callable(cmdline_args.run_command)
+    if not hasattr(cmdline_args, "run_command"):
+        parser.print_help(file=sys.stderr)
+
+        sys.exit(1)
 
     try:
         cmdline_args.run_command(cmdline_args)
