@@ -2,8 +2,6 @@ from . import problem_id_information
 
 
 PROBLEM_URL_FORMAT = "https://atcoder.jp/contests/{contest_id}/tasks/{task_id}"
-
-
 PROBLEM_NUMBER_BOUNDARY = {"abc": 20, "arc": 35, "agc": 1}
 
 
@@ -15,7 +13,11 @@ def get_problem_url(
         and 42 <= problem_id_info.contest_index <= 50
         and problem_id_info.problem_index in {"c", "d"}
     ):
-        task_id = f'arc{problem_id_info.contest_index + 16:03d}_{"a" if problem_id_info.problem_index == "c" else "b"}'
+        ref_contest_class = "arc"
+        ref_contest_index = problem_id_info.contest_index + 16
+        ref_problem_index = {"c": "a", "d": "b"}[problem_id_info.problem_index]
+
+        task_id = f"{ref_contest_class}{ref_contest_index:03d}_{ref_problem_index}"
     else:
         if (
             problem_id_info.contest_index
