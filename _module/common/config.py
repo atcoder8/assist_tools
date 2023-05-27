@@ -12,7 +12,9 @@ class Config:
     class Command:
         def __init__(self, command_dict) -> None:
             # Command of online-judge-tools.
-            self.online_judge_tools = command_dict["online_judge_tools"]
+            self.online_judge_tools = pathlib.Path(
+                command_dict["online_judge_tools"]
+            ).expanduser()
 
             # Command to open a URL.
             self.open_url = command_dict["open_url"]
@@ -22,7 +24,7 @@ class Config:
             # Pathname of cargo config pathname.
             self.cargo_config_file_path = pathlib.Path(
                 path_dict["cargo_config_file_pathname"]
-            )
+            ).expanduser()
 
             # Pathname format of submission file.
             self._submission_file_pathname_format: str = path_dict[
@@ -31,7 +33,7 @@ class Config:
             assert isinstance(self._submission_file_pathname_format, str)
 
             # Pathname of the directory to download testcase.
-            self.testcase_dir_path = pathlib.Path(path_dict["testcase_dir_pathname"])
+            self.testcase_dir_path = pathlib.Path(path_dict["testcase_dir_pathname"]).expanduser()
 
         def get_submission_file_path(
             self, problem_id_info: problem_id_information.ProblemIdInformation
@@ -44,7 +46,7 @@ class Config:
                 problem_index=problem_id_info.problem_index,
             )
 
-            return pathlib.Path(submission_file_pathname)
+            return pathlib.Path(submission_file_pathname).expanduser()
 
     class Template:
         def __init__(self, template_dict: dict) -> None:
@@ -64,7 +66,7 @@ class Config:
     def read_config(
         cls, config_path: os.PathLike = pathlib.Path(DEFAULT_CONFIG_PATHNAME)
     ) -> "Config":
-        config_path = pathlib.Path(config_path)
+        config_path = pathlib.Path(config_path).expanduser()
 
         with config_path.open("br") as config_file:
             config_dict = tomllib.load(config_file)
