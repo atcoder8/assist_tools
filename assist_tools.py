@@ -59,7 +59,7 @@ if __name__ == "__main__":
         )
     except problem_id_information.InvalidContestNameException as err:
         print(
-            f'"{err.problem_id}" is incorrect as a contest ID.',
+            f'"{err.problem_id}" is incorrect as a problem ID.',
             file=sys.stderr,
         )
 
