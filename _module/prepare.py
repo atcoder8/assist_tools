@@ -72,9 +72,10 @@ Make the following preparations:
         super().add_arguments(parser)
 
         parser.add_argument(
-            "--no-open",
+            "-o",
+            "--open",
             action="store_true",
-            help="If this option is specified, the problem page will not open.",
+            help="If this option is specified, the problem page will open.",
         )
 
         parser.add_argument(
@@ -86,20 +87,20 @@ Make the following preparations:
     def __init__(self, cmdline_args: argparse.Namespace) -> None:
         super().__init__(cmdline_args)
 
-        assert hasattr(cmdline_args, "no_open")
+        assert hasattr(cmdline_args, "open")
         assert hasattr(cmdline_args, "no_download")
 
-        assert isinstance(cmdline_args.no_open, bool)
+        assert isinstance(cmdline_args.open, bool)
         assert isinstance(cmdline_args.no_download, bool)
 
-        self.no_open = cmdline_args.no_open
+        self.open = cmdline_args.open
         self.no_download = cmdline_args.no_download
 
     def run_command(self):
         prepare_solve_problem(
             self.config,
             self.problem_id_info,
-            open_problem_page=not self.no_open,
+            open_problem_page=self.open,
             download_testcase=not self.no_download,
         )
 
