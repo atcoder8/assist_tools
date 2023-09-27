@@ -3,7 +3,7 @@
 online_judge_tools = ".venv/bin/oj"
 
 # Command to open a URL.
-open_url = "firefox.exe"
+open_url = "xdg-open"
 
 [path]
 # Pathname of cargo config pathname.
