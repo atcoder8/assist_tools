@@ -12,9 +12,9 @@ class Config:
     class Command:
         def __init__(self, command_dict) -> None:
             # Command of online-judge-tools.
-            self.online_judge_tools = pathlib.Path(
-                command_dict["online_judge_tools"]
-            ).expanduser()
+            self.online_judge_tools = str(
+                pathlib.Path(command_dict["online_judge_tools"]).expanduser()
+            )
 
             # Command to open a URL.
             self.open_url = command_dict["open_url"]
@@ -33,7 +33,9 @@ class Config:
             assert isinstance(self._submission_file_pathname_format, str)
 
             # Pathname of the directory to download testcase.
-            self.testcase_dir_path = pathlib.Path(path_dict["testcase_dir_pathname"]).expanduser()
+            self.testcase_dir_path = pathlib.Path(
+                path_dict["testcase_dir_pathname"]
+            ).expanduser()
 
         def get_submission_file_path(
             self, problem_id_info: problem_id_information.ProblemIdInformation
