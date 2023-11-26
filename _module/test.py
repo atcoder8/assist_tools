@@ -13,27 +13,31 @@ def test_solution(
     *,
     error: float | None = None,
     time_limit: float = DEFAULT_TIME_LIMIT,
-    debug: bool = False,
+    release: bool = False,
+    other_options: list[str] | None = None,
     check_returncode: bool = True,
 ) -> subprocess.CompletedProcess[bytes]:
-    if debug:
-        build_cmd_args = ["cargo", "build", "--bin", problem_id]
-    else:
+    if release:
         build_cmd_args = ["cargo", "build", "--release", "--bin", problem_id]
+    else:
+        build_cmd_args = ["cargo", "build", "--bin", problem_id]
 
     subprocess.run(build_cmd_args, check=True)
 
     test_cmd_args = [oj_command, "test"]
 
-    if debug:
-        test_cmd_args.extend(["-c", f"./target/debug/{problem_id}"])
-    else:
+    if release:
         test_cmd_args.extend(["-c", f"./target/release/{problem_id}"])
+    else:
+        test_cmd_args.extend(["-c", f"./target/debug/{problem_id}"])
 
     if error is not None:
         test_cmd_args.extend(["--error", str(error)])
 
     test_cmd_args.extend(["--tle", str(time_limit)])
+
+    if other_options is not None:
+        test_cmd_args.extend(other_options)
 
     return subprocess.run(test_cmd_args, check=check_returncode)
 
@@ -62,10 +66,17 @@ class TestSolution(command.Command):
         )
 
         parser.add_argument(
-            "-d",
-            "--debug",
+            "-r",
+            "--release",
             action="store_true",
-            help="If this option is specified, the test is performed in debug mode.",
+            help="If this option is specified, the test is performed in release mode.",
+        )
+
+        parser.add_argument(
+            "other_options",
+            type=str,
+            nargs="*",
+            help="Other options to pass to `online-judge-tools`. (Example: --ignore-spaces)",
         )
 
     def __init__(self, cmdline_args: argparse.Namespace) -> None:
@@ -73,15 +84,18 @@ class TestSolution(command.Command):
 
         assert hasattr(cmdline_args, "error")
         assert hasattr(cmdline_args, "time_limit")
-        assert hasattr(cmdline_args, "debug")
+        assert hasattr(cmdline_args, "release")
+        assert hasattr(cmdline_args, "other_options")
 
         assert cmdline_args.error is None or isinstance(cmdline_args.error, float)
         assert isinstance(cmdline_args.time_limit, float)
-        assert isinstance(cmdline_args.debug, bool)
+        assert isinstance(cmdline_args.release, bool)
+        assert isinstance(cmdline_args.other_options, list)
 
         self.error: float | None = cmdline_args.error
         self.time_limit = cmdline_args.time_limit
-        self.debug = cmdline_args.debug
+        self.release = cmdline_args.release
+        self.other_options: list[str] = cmdline_args.other_options
 
     def run_command(self) -> subprocess.CompletedProcess[bytes]:
         return test_solution(
@@ -89,7 +103,8 @@ class TestSolution(command.Command):
             self.problem_id_info.problem_id,
             error=self.error,
             time_limit=self.time_limit,
-            debug=self.debug,
+            release=self.release,
+            other_options=self.other_options,
             check_returncode=True,
         )
 

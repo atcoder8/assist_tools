@@ -87,7 +87,8 @@ class SubmitSolution(test.TestSolution):
                 self.problem_id_info.problem_id,
                 error=self.error,
                 time_limit=self.time_limit,
-                debug=self.debug,
+                release=self.release,
+                other_options=self.other_options,
                 check_returncode=True,
             )
 

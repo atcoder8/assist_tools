@@ -55,6 +55,7 @@ def prepare_solve_problem(
             config.command.online_judge_tools,
             problem_url,
             config.path.testcase_dir_path,
+            other_options=None,
             check_returncode=True,
         )
 
